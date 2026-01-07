@@ -1,8 +1,13 @@
 {
-  "name": "Hello Extensions",
-  "description": "Base Level Extension",
-  "version": "1.0",
   "manifest_version": 3,
+  "name": "Human-gate",
+  "version": "1.0",
+  "description": "Bloquez gratuitement les générations IA. Les vidéos, photo, sons et textes ne seront plus un soucis pour vous !",
+  "icons": {
+    "16": "noia.png",
+    "48": "noia.png",
+    "128": "noia.png"
+  },
   "action": {
     "default_popup": "hello.html",
     "default_icon": "noia.png"
