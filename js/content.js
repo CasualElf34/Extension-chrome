@@ -1,67 +1,42 @@
-// Content script : bloque les images IA selon l'état du bouton
-const API_URL = 'https://api.aionot.com/analyze?url='; // API AI or Not
+const API_USER = '1281723001'; 
+const API_SECRET = 'oyNAPLh2uS6uxrPEBnJQ7WAYdUqotr59';
 
-// Récupère l'état du blocage depuis le storage
-function getBlockState() {
-  return new Promise(resolve => {
-    chrome.storage.sync.get(['blockAI'], (result) => {
-      resolve(result.blockAI === true);
+// Fonction pour bloquer une image
+function blockImage(imgElement) {
+    imgElement.style.filter = "blur(20px)"; // Floute l'image
+    imgElement.style.transition = "0.5s";
+    // On peut aussi remplacer la source par une image "Bloqué"
+    imgElement.src = "https://via.placeholder.com/300x200?text=IMAGE+IA+BLOQUEE+PAR+HUMAN-GATE";
+}
+
+// Vérifier les images sur la page
+async function checkImages() {
+    chrome.storage.local.get(['blockAI'], async (result) => {
+        if (!result.blockAI) return; // Si le switch est OFF, on ne fait rien
+
+        const images = document.querySelectorAll('img:not(.hg-checked)');
+        
+        for (let img of images) {
+            img.classList.add('hg-checked'); // Marquer pour ne pas scanner 2 fois
+            
+            const url = img.src;
+            if (!url.startsWith('http')) continue;
+
+            const apiUrl = `https://api.sightengine.com/1.0/check.json?url=${encodeURIComponent(url)}&models=genai&api_user=${API_USER}&api_secret=${API_SECRET}`;
+            
+            try {
+                const response = await fetch(apiUrl);
+                const data = await response.json();
+
+                if (data.type && data.type.ai_generated > 0.5) {
+                    blockImage(img);
+                    // On prévient le popup pour augmenter le compteur
+                    chrome.runtime.sendMessage({type: "INCREMENT_COUNTER"});
+                }
+            } catch (e) { console.error("Erreur scan:", e); }
+        }
     });
-  });
 }
 
-// Met à jour le compteur dans le storage
-function incrementBlockedCount() {
-  chrome.storage.sync.get(['blockedCount'], (result) => {
-    const count = (result.blockedCount || 0) + 1;
-    chrome.storage.sync.set({ blockedCount: count });
-  });
-}
-
-// Vérifie si une image est IA via l'API AI or Not
-function checkImageAI(url, imgElement) {
-  fetch(API_URL + encodeURIComponent(url))
-    .then(res => res.json())
-    .then(data => {
-      console.log('AI or Not result:', data, url); // DEBUG
-      if (data && data.result === 'ai') {
-        imgElement.style.filter = 'blur(20px)';
-        imgElement.title = 'Image IA bloquée';
-        incrementBlockedCount();
-      }
-    })
-    .catch((err) => { console.error('API error', err); });
-}
-
-// Applique le blocage sur toutes les images
-async function processImages() {
-  const block = await getBlockState();
-  if (!block) return;
-  document.querySelectorAll('img').forEach(img => {
-    if (img.src && !img.dataset.iaChecked) {
-      img.dataset.iaChecked = '1';
-      checkImageAI(img.src, img);
-    }
-  });
-}
-
-// Surveille les nouvelles images ajoutées
-const observer = new MutationObserver(processImages);
-observer.observe(document.body, { childList: true, subtree: true });
-
-// Premier scan
-processImages();
-
-function checkImageAI(url, imgElement) {
-  fetch(API_URL + encodeURIComponent(url))
-    .then(res => res.json())
-    .then(data => {
-      console.log('AI or Not result:', data, url); // <-- Ajout pour debug
-      if (data && data.result === 'ai') {
-        imgElement.style.filter = 'blur(20px)';
-        imgElement.title = 'Image IA bloquée';
-        incrementBlockedCount();
-      }
-    })
-    .catch(() => {});
-}
+// Lancer le scan au chargement et au scroll
+setInterval(checkImages, 3000);
