@@ -1,6 +1,150 @@
 <html>
   <body>
-    <h1>Hello Extensions</h1>
+    <div class="popup-container">
+      <div class="header">
+        <img src="noia.png" class="logo" alt="logo">
+        <span class="title">Human-<b>gate</b></span>
+      </div>
+      <div class="counter-card">
+        <div class="counter-title">Images IA bloquées</div>
+        <div class="counter-value" id="ia-blocked-count">0</div>
+      </div>
+      <div class="switch-group">
+        <label class="switch-label">
+          <span>Bloquer les images IA</span>
+          <input type="checkbox" id="block-ai-images" style="display:none;">
+          <span class="switch"></span>
+        </label>
+        <label class="switch-label">
+          <span>Autre fonctionnalité (stand by)</span>
+          <input type="checkbox" id="other-feature" style="display:none;">
+          <span class="switch"></span>
+        </label>
+      </div>
+    </div>
+
+    <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: #5a7cb0;
+    }
+    .popup-container {
+      min-width: 340px;
+      min-height: 260px;
+      background: #70a3ee;
+      border-radius: 22px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.13);
+      padding: 24px 22px 20px 22px;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      gap: 18px;
+    }
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+    .logo {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      background: #fff;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+    .title {
+      font-size: 1.45em;
+      font-weight: 600;
+      color: #222;
+      letter-spacing: 1px;
+      display: flex;
+      align-items: center;
+    }
+    .title b {
+      color: #1565c0;
+      font-weight: 800;
+      margin-left: 2px;
+    }
+    .counter-card {
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+      padding: 18px 0 10px 0;
+      margin-bottom: 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 70px;
+    }
+    .counter-title {
+      font-size: 1.08em;
+      color: #1565c0;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+    .counter-value {
+      font-size: 2.2em;
+      font-weight: 700;
+      color: #333;
+      letter-spacing: 1px;
+    }
+    .switch-group {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      background: #e3edfa;
+      border-radius: 14px;
+      padding: 16px 10px 10px 10px;
+      margin-top: 6px;
+    }
+    .switch-label {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      font-size: 1.08em;
+      font-weight: 500;
+      color: #333;
+      border-radius: 14px;
+      padding: 10px 14px;
+      transition: background 0.2s;
+    }
+    .switch-label:hover {
+      background: #f0f4fa;
+    }
+    .switch {
+      display: inline-block;
+      width: 44px;
+      height: 24px;
+      background: #cfd8dc;
+      border-radius: 24px;
+      position: relative;
+      transition: background 0.3s;
+      cursor: pointer;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    }
+    .switch:before {
+      content: "";
+      position: absolute;
+      left: 3px;
+      top: 3px;
+      width: 18px;
+      height: 18px;
+      background: #fff;
+      border-radius: 50%;
+      transition: left 0.3s, background 0.3s;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.18);
+    }
+    input[type="checkbox"]:checked + .switch {
+      background: #90caf9;
+    }
+    input[type="checkbox"]:checked + .switch:before {
+      left: 23px;
+      background: #1565c0;
+    }
+    </style>
     <script src="popup.js"></script>
   </body>
 </html>
