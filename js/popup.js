@@ -30,3 +30,28 @@ document.addEventListener('DOMContentLoaded', function() {
 		chrome.storage.sync.set({ otherFeature: e.target.checked });
 	});
 });
+
+document.addEventListener('DOMContentLoaded', () => {
+  const toggle = document.getElementById('block-ai-images');
+
+  // Charger l’état sauvegardé
+  chrome.storage.sync.get(['aiBlockEnabled'], (res) => {
+    toggle.checked = res.aiBlockEnabled ?? false;
+  });
+
+  // Quand on clique sur le bouton
+  toggle.addEventListener('change', () => {
+    const enabled = toggle.checked;
+
+    // Sauvegarde l’état
+    chrome.storage.sync.set({ aiBlockEnabled: enabled });
+
+    // Envoie l’ordre à la page active
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+      chrome.tabs.sendMessage(tabs[0].id, {
+        action: "TOGGLE_AI_BLUR",
+        enabled: enabled
+      });
+    });
+  });
+});

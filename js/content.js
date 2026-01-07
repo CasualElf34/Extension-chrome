@@ -40,3 +40,41 @@ async function checkImages() {
 
 // Lancer le scan au chargement et au scroll
 setInterval(checkImages, 3000);
+
+let aiBlurEnabled = false;
+
+chrome.runtime.onMessage.addListener((message) => {
+  if (message.action === "TOGGLE_AI_BLUR") {
+    aiBlurEnabled = message.enabled;
+
+    if (aiBlurEnabled) {
+      scanAndBlurImages();
+    } else {
+      removeBlur();
+    }
+  }
+});
+
+const style = document.createElement("style");
+style.textContent = `
+  .ai-blur {
+    filter: blur(20px);
+    transition: filter 0.3s ease;
+  }
+`;
+document.head.appendChild(style);
+
+function removeBlur() {
+  document.querySelectorAll(".ai-blur").forEach(img => {
+    img.classList.remove("ai-blur");
+  });
+}
+
+const observer = new MutationObserver(() => {
+  if (aiBlurEnabled) scanAndBlurImages();
+});
+
+observer.observe(document.body, {
+  childList: true,
+  subtree: true
+});
