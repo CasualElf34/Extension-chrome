@@ -4,12 +4,12 @@
   "version": "1.0",
   "description": "Bloquez gratuitement les générations IA. Les vidéos, photo, sons et textes ne seront plus un soucis pour vous !",
   "icons": {
-    "16": "noia.png",
-    "48": "noia.png",
-    "128": "noia.png"
+    "16": "html/img/noia.png",
+    "48": "html/img/noia.png",
+    "128": "html/img/noia.png"
   },
   "action": {
-    "default_popup": "hello.html",
-    "default_icon": "noia.png"
+    "default_popup": "html/Human.html",
+    "default_icon": "html/img/noia.png"
   }
 }
